@@ -137,9 +137,7 @@ end
 
 local _M = {}
 
-local actions_to_run = {}
-
-_M.obtain = function(config, actions)
+_M.obtain = function(config, actions, actions_to_run)
   -- Obtain actions to run
   for key, statement in pairs(config) do
     if utils.exists(key, actions) then
@@ -147,7 +145,7 @@ _M.obtain = function(config, actions)
     elseif key:match("http%.") then
       if check_condition(key) then
         -- If condition is true dive in
-        _M.obtain(statement, actions)
+        _M.obtain(statement, actions, actions_to_run)
       end
     end
   end

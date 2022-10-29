@@ -26,7 +26,7 @@ local function create_context(config)
   }
   ngx.ctx.http = http
 
-  local actions_to_run = rules.obtain(utils.decode(config), utils.keys(actions))
+  local actions_to_run = rules.obtain(utils.decode(config), utils.keys(actions), {})
   ngx.ctx.actions = actions_to_run
 end
 
