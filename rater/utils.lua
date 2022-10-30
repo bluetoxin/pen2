@@ -72,4 +72,11 @@ _M.eval = function(str)
   return assert(loadstring(("return %s"):format(str)))()
 end
 
+_M.get_path = function(file)
+  -- Return path to specified file
+  local pattern = ("{ find / -name %s 3>&2 2>&1 1>&3 | egrep -v '(Permission denied|Invalid argument)' >&3; } 3>&2 2>&1"):format(file)
+  local path = io.popen(pattern):read("*a"):gsub("%s+", "")
+  return path
+end
+
 return _M

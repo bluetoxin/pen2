@@ -55,7 +55,7 @@ ffi.cdef [[
     );
 ]]
 
-local libwirefilter = ffi.load("/usr/local/openresty/lualib/resty/libs/libwirefilter.so")
+local libwirefilter = ffi.load(utils.get_path("libwirefilter.so"))
 local str_t = ffi.typeof("wirefilter_externally_allocated_str_t")
 
 local function to_str(str)
