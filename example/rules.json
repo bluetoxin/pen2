@@ -1,10 +1,6 @@
 {
-  "http.ip in {2.2.2.2 1.1.1.1}": {
-    "sqli": {
-      "action": "block"
-    },
-    "xss": {
-      "action": "captcha"
-    }
+  "http.ip in {1.1.1.1}": {
+    "sqli": true,
+    "xss": true
   }
 }

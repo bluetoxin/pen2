@@ -15,7 +15,7 @@ end
 local function log_err(ok, err)
   -- Log an err if set failure
   if not ok then
-    utils.log(("Failed to set %s. Error: %s."):format(trigger, err))
+    utils.log(("Failed to set trigger. Error: %s."):format(err))
   end
 end
 

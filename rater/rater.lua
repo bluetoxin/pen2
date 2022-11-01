@@ -15,32 +15,39 @@ local supported_dbs = {
 
 local actions = utils.load("rules")
 
-local function log_trigger(trigger)
+local function log_triggers(triggers)
   -- Check for formatting and run log[db]
-  if trigger["db"] and utils.exists(trigger["db"]:match("%a+"), supported_dbs) then
-    local db, ip, port = trigger["db"]:match("(%a+)://([%d%.%a]+):(%d+)")
-    if db and ip and port then
-      log[db](ip, port, unpack(trigger["trigger"]))
-    else
-      utils.log("Invalid format. Path to db should looks like: 'db://ip:port'.")
+  for _, trigger in pairs(triggers) do
+    if trigger["db"] and utils.exists(trigger["db"]:match("%a+"), supported_dbs) then
+      local db, ip, port = trigger["db"]:match("(%a+)://([%d%.%a]+):(%d+)")
+      if db and ip and port then
+        log[db](ip, port, unpack(trigger["trigger"]))
+      else
+        utils.log("Invalid format. Path to db should looks like: 'db://ip:port'.")
+      end
     end
   end
 end
 
 local function run_actions(phase)
   -- Run actions in right openresty phase
+  local triggers = {}
   for action_name, action_param in pairs(ngx.ctx.actions) do
     if utils.exists(phase, phases[action_name]) then
+      if type(action_param) ~= "table" then
+        action_param = {action_param}
+      end
       local trigger = {
         ["trigger"] = actions[action_name][phase](ngx.ctx.http.request, action_param),
-        ["db"] = action_param.log or ngx.ctx.default.db or os.getenv("DB_URI"),
+        ["db"] = action_param.db_uri or ngx.ctx.db_uri or os.getenv("DB_URI"),
       }
       if next(trigger["trigger"]) then
         -- Log trigger and send response 
-        log_trigger(trigger)
+        table.insert(triggers, trigger)
       end
     end
   end
+  return triggers
 end
 
 local function create_context(config)
@@ -74,7 +81,11 @@ _M.run = function()
   if phase == "access" then
     create_context(ngx.ctx.rules_path or os.getenv("RULES_PATH"))
   end
-  run_actions(phase)
+  local triggers = run_actions(phase)
+  if next(triggers) then
+    ngx.say(ngx.ctx.block_page or os.getenv("BLOCK_PAGE"))
+  end
+  log_triggers(triggers)
 end
 
 return _M

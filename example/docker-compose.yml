@@ -1,20 +1,8 @@
 version: '2'
 services:
-#    beebox:
-#        container_name: beebox
-#        image: 2d8ru/bwapp
-#        restart: always
-#        networks:
-#            - rater
-#    redis:
-#        image: redis
-#        container_name: redis
-#        restart: always
-#        networks:
-#            - rater
-    memcached:
-        image: memcached
-        container_name: memcached
+    redis:
+        image: redis
+        container_name: redis
         restart: always
         networks:
             - rater
@@ -27,8 +15,7 @@ services:
         networks:
             - rater
         depends_on:
-            - memcached
-
+            - redis
 networks:
     rater:
         driver: bridge

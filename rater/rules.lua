@@ -141,7 +141,9 @@ _M.obtain = function(config, actions, actions_to_run)
   -- Obtain actions to run
   for key, statement in pairs(config) do
     if utils.exists(key, actions) then
-      actions_to_run[key] = statement
+      if statement then
+        actions_to_run[key] = statement
+      end
     elseif key:match("http%.") then
       if check_condition(key) then
         -- If condition is true dive in
