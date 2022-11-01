@@ -5,19 +5,19 @@ services:
         container_name: redis
         restart: always
         networks:
-            - rater
+            - pen2
     waf:
-        image: rater
-        container_name: rater
+        image: pen2
+        container_name: pen2
         restart: always
         ports:
             - "0.0.0.0:8008:80"
         networks:
-            - rater
+            - pen2
         depends_on:
             - redis
 networks:
-    rater:
+    pen2:
         driver: bridge
         ipam:
             config:

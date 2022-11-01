@@ -79,4 +79,15 @@ _M.get_path = function(file)
   return path
 end
 
+_M.parse_db_str = function(rule_uri)
+  -- Parse redis://192.168.88.2:6379 to db, ip and port
+  local uri = rule_uri or ngx.ctx.db_uri or os.getenv("DB_URI")
+  if uri then
+    local db, ip, port = uri:match("(%a+)://([%d%.%a]+):(%d+)")
+    if db and ip and port then
+      return db, ip, port
+    end
+  end
+end
+
 return _M

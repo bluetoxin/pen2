@@ -1,11 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 get_log () {
-  docker exec -ti rater cat /usr/local/openresty/nginx/logs/my.log
+  docker exec -ti pen2 cat /usr/local/openresty/nginx/logs/pen2.log
 }
 
 clean_log () {
-  docker exec -ti rater sh -c ">/usr/local/openresty/nginx/logs/my.log"
+  docker exec -ti pen2 sh -c ">/usr/local/openresty/nginx/logs/pen2.log"
 }
 
 make_request () {
@@ -13,13 +13,21 @@ make_request () {
 }
 
 run_docker () {
-  if docker ps | grep -q "rater"
+  if docker ps | grep -q "pen2"
   then
-    docker-compose -f ./example/docker-compose.yml down
+    docker-compose -f ./docker/docker-compose.yml down
   fi
-  docker build -f ./example/Dockerfile -t rater .
-  docker-compose -f ./example/docker-compose.yml up -d
+  docker build -f ./docker/Dockerfile -t pen2 .
+  docker-compose -f ./docker/docker-compose.yml up -d
 }
+
+#run_shell () {
+#}
+
+#declare -A args=( ["log"]="get_log" ["clean"]="clean_log" ["request"]="make_request" ["docker"]="run_docker" ["shell"]="run_shell" )
+
+
+#args=()
 
 if [[ $1 == "log" ]]
 then

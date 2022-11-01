@@ -1,10 +1,4 @@
-<h2 align="center">
-<img src="https://i.ibb.co/HYj7D5H/2022-11-01-14-53-36-removebg-preview.png" width="300">
-</h2>
-
-
-
-**rater** is an opensource flexible configurable waf.
+**pen2** is an opensource flexible configurable waf.
 
 * [Features](#features)
 * [Usage](#usage)
@@ -16,11 +10,6 @@ _Detections:_
 - SQLi (libinjection)  
 - XSS (libinjection)
 
-_Actions:_
-
-- Block (Static Html Page)
-- JSChallenge
-
 _Databases:_
 - Memcached
 - Redis
@@ -28,7 +17,7 @@ _Databases:_
 ## Usage
 
 ```
-git clone https://github.com/pinktoxin/rater ; chmod +x ./rater/start.sh ; ./rater/start.sh docker
+git clone https://github.com/pinktoxin/pen2 ; chmod +x ./pen2/start.sh ; ./pen2/start.sh docker
 ```
 
 What's next? Try to attack WEB Application!  
@@ -85,10 +74,5 @@ _Can I set a different database for the rule?_
 }
 ```
 
-You can set a new (supported by rater) database for each rule. Currently only memcached and redis are implemented.
-  
-  
-  
-  
+You can set a new (supported by pen2) database for each rule. Currently only memcached and redis are implemented.
 <br>
-
