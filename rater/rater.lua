@@ -1,6 +1,7 @@
 -- Main module
 local utils = require("utils")
 local rules = require("rules")
+local log = require("log")
 
 local phases = {
   ["rate_limit"] = {"access", "log"},
@@ -8,13 +9,36 @@ local phases = {
   ["sqli"] = {"access"},
 }
 
+local supported_dbs = {
+  "redis", "memcached",
+}
+
 local actions = utils.load("rules")
+
+local function log_trigger(trigger)
+  -- Check for formatting and run log[db]
+  if trigger["db"] and utils.exists(trigger["db"]:match("%a+"), supported_dbs) then
+    local db, ip, port = trigger["db"]:match("(%a+)://([%d%.%a]+):(%d+)")
+    if db and ip and port then
+      log[db](ip, port, unpack(trigger["trigger"]))
+    else
+      utils.log("Invalid format. Path to db should looks like: 'db://ip:port'.")
+    end
+  end
+end
 
 local function run_actions(phase)
   -- Run actions in right openresty phase
   for action_name, action_param in pairs(ngx.ctx.actions) do
     if utils.exists(phase, phases[action_name]) then
-      utils.log(actions[action_name][phase](ngx.ctx.http.request, action_param))
+      local trigger = {
+        ["trigger"] = actions[action_name][phase](ngx.ctx.http.request, action_param),
+        ["db"] = action_param.log or ngx.ctx.default.db or os.getenv("DB_URI"),
+      }
+      if next(trigger["trigger"]) then
+        -- Log trigger and send response 
+        log_trigger(trigger)
+      end
     end
   end
 end
@@ -44,11 +68,11 @@ end
 
 local _M = {}
 
-_M.run = function(config)
+_M.run = function()
   -- Runs rater
   local phase = ngx.get_phase()
   if phase == "access" then
-    create_context(config)
+    create_context(ngx.ctx.rules_path or os.getenv("RULES_PATH"))
   end
   run_actions(phase)
 end

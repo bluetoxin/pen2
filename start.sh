@@ -15,11 +15,10 @@ make_request () {
 run_docker () {
   if docker ps | grep -q "rater"
   then
-      docker stop rater
-      docker rm -f rater
+    docker-compose -f ./example/docker-compose.yml down
   fi
   docker build -f ./example/Dockerfile -t rater .
-  docker run -p "0.0.0.0:8008:80" --name rater -d rater
+  docker-compose -f ./example/docker-compose.yml up -d
 }
 
 if [[ $1 == "log" ]]

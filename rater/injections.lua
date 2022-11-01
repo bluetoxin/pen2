@@ -67,9 +67,7 @@ _M.get_triggers = function(request_data, type)
     for param, value in pairs(request_table) do
       local detected = _M[type](value)
       if detected then
-        table.insert(triggers, {
-          param, value,
-        })
+        table.insert(triggers, ("%s=%s"):format(param, value))
       end
     end
   end
