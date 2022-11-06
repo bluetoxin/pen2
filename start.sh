@@ -21,14 +21,6 @@ run_docker () {
   docker-compose -f ./docker/docker-compose.yml up -d
 }
 
-#run_shell () {
-#}
-
-#declare -A args=( ["log"]="get_log" ["clean"]="clean_log" ["request"]="make_request" ["docker"]="run_docker" ["shell"]="run_shell" )
-
-
-#args=()
-
 if [[ $1 == "log" ]]
 then
   get_log

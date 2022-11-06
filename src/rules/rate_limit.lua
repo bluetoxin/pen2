@@ -13,15 +13,18 @@ end
 
 local _M = {}
 
-_M.init = function(_, args)
+_M.init = function(args)
   -- Check if rate_limit exceeds
-  local db_name, ip, port = utils.parse_db_str(args.db_uri)
-  if db_name ~= "redis" then
-    utils.log("Only redis can be used for rate limiting.")
-  end
-  local db = log.connect(db_name, ip, port)
-  local rates = obtain_rates(db, "rate_limit")
   local current_timestamp = os.time(os.date("!*t"))
+  local db_name, ip, port = utils.parse_db_str(args.db_uri)
+  local db = log.connect(db_name, ip, port)
+  local ban_until = db:lrange(ngx.ctx.http.ip, 0, -1)
+  if next(ban_until) and math.max(unpack(ban_until)) > current_timestamp then
+    ngx.status = 403
+    ngx.say(ngx.ctx.block_page or os.getenv("BLOCK_PAGE"))
+    ngx.exit(ngx.HTTP_FORBIDDEN)
+  end
+  local rates = obtain_rates(db, "rate_limit")
   if not rates[ngx.ctx.http.ip] then
     rates[ngx.ctx.http.ip] = ("0:%s"):format(current_timestamp)
   end
@@ -35,7 +38,7 @@ _M.init = function(_, args)
     log.log_err(ok, err)
   elseif args.amount == tonumber(rate) then
     return {
-      ("rate_limit=%s"):format(current_timestamp + args.delay),
+      tostring(current_timestamp + args.delay),
     }
   end
   return {}

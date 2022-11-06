@@ -1,9 +1,7 @@
 {
   "http.ip in {1.1.1.1}": {
-    "sqli": true,
-    "xss": true,
     "rate_limit": {
-      "delay": 3600,
+      "delay": 30,
       "rate": 15,
       "amount": 30
     }
