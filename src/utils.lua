@@ -46,6 +46,9 @@ end
 
 _M.exists = function(item, dict)
   -- Check if "item" exists in dict
+  if type(item) == "table" then
+    item = unpack(item)
+  end
   for _, value in pairs(dict) do
     if value == item then
       return true
