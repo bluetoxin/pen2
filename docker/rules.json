@@ -1,9 +1,14 @@
 {
-  "http.request.path == \"/\"": {
-    "rate_limit": {
-      "delay": 30,
-      "rate": 15,
-      "amount": 30
+  "http.ip in {1.1.1.1 2.2.2.2}": {
+    "http.request.path == \"/\"": {
+      "http.request.uri.a ~ \"ttt\"": {
+        "rate_limit": false
+      }
     }
+  },
+  "rate_limit": {
+    "delay": 30,
+    "rate": 15,
+    "amount": 30
   }
 }
