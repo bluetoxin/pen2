@@ -8,7 +8,7 @@
 ## Usage
 
 ```
-git clone https://github.com/pinktoxin/pen2 ; chmod +x ./pen2/start.sh ; ./pen2/start.sh docker
+git clone https://github.com/bluetoxin/pen2 ; chmod +x ./pen2/start.sh ; ./pen2/start.sh docker
 ```
 
 What's next? Try to attack WEB Application!  
